@@ -1,0 +1,93 @@
+// Render with: dot -Tpng schema.dot -o schema.png
+digraph schema {
+    graph [rankdir=LR, bgcolor="white", pad=0.3, nodesep=0.5, ranksep=1.6, fontname="Helvetica"];
+    node  [shape=plain, fontname="Helvetica", fontsize=11];
+    edge  [color="#555555", arrowhead=crow, arrowtail=none, dir=both];
+
+    model [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+        <tr><td bgcolor="#dbe7f5" colspan="2"><b>model</b></td></tr>
+        <tr><td port="pk" align="left">model_id</td><td port="pk_r" align="left">PK</td></tr>
+        <tr><td align="left">name</td><td></td></tr>
+        <tr><td align="left">developer</td><td></td></tr>
+        <tr><td align="left">deployment_status</td><td></td></tr></table>>];
+
+    task [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+        <tr><td bgcolor="#dbe7f5" colspan="2"><b>task</b></td></tr>
+        <tr><td port="pk" align="left">task_id</td><td port="pk_r" align="left">PK</td></tr>
+        <tr><td align="left">target_program</td><td></td></tr>
+        <tr><td align="left">intended_vuln</td><td></td></tr>
+        <tr><td align="left">is_impossible</td><td></td></tr></table>>];
+
+    agent [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+        <tr><td bgcolor="#dbe7f5" colspan="2"><b>agent</b></td></tr>
+        <tr><td port="pk" align="left">agent_id</td><td port="pk_r" align="left">PK</td></tr>
+        <tr><td align="left">handle</td><td></td></tr>
+        <tr><td port="model" align="left">model_id</td><td port="model_r" align="left">FK</td></tr>
+        <tr><td port="task" align="left">task_id</td><td port="task_r" align="left">FK</td></tr>
+        <tr><td align="left">budget_tier</td><td></td></tr>
+        <tr><td align="left">started_at</td><td></td></tr>
+        <tr><td align="left">ended_at</td><td></td></tr>
+        <tr><td align="left">termination_reason</td><td></td></tr>
+        <tr><td align="left">poisoned_at</td><td></td></tr></table>>];
+
+    workstream [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+        <tr><td bgcolor="#f5e6d3" colspan="2"><b>workstream</b></td></tr>
+        <tr><td port="pk" align="left">workstream_id</td><td port="pk_r" align="left">PK</td></tr>
+        <tr><td align="left">name</td><td></td></tr>
+        <tr><td port="parent" align="left">parent_id</td><td port="parent_r" align="left">FK</td></tr>
+        <tr><td align="left">description</td><td></td></tr></table>>];
+
+    message [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+        <tr><td bgcolor="#dbe7f5" colspan="2"><b>message</b></td></tr>
+        <tr><td port="pk" align="left">message_id</td><td port="pk_r" align="left">PK</td></tr>
+        <tr><td port="parent" align="left">parent_id</td><td port="parent_r" align="left">FK</td></tr>
+        <tr><td port="reply" align="left">reply_to_id</td><td port="reply_r" align="left">FK</td></tr>
+        <tr><td align="left">claimed_handle</td><td></td></tr>
+        <tr><td port="author" align="left">author_agent_id</td><td port="author_r" align="left">FK</td></tr>
+        <tr><td align="left">posted_at</td><td></td></tr>
+        <tr><td align="left">content_type</td><td></td></tr>
+        <tr><td port="ws" align="left">workstream_id</td><td port="ws_r" align="left">FK</td></tr>
+        <tr><td align="left">body</td><td></td></tr>
+        <tr><td align="left">is_signed</td><td></td></tr>
+        <tr><td align="left">signature_valid</td><td></td></tr></table>>];
+
+    message_read [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+        <tr><td bgcolor="#dbe7f5" colspan="2"><b>message_read</b></td></tr>
+        <tr><td port="msg" align="left">message_id</td><td port="msg_r" align="left">PK, FK</td></tr>
+        <tr><td port="reader" align="left">reader_agent_id</td><td port="reader_r" align="left">PK, FK</td></tr>
+        <tr><td align="left">read_at</td><td></td></tr>
+        <tr><td align="left">importance</td><td></td></tr></table>>];
+
+    tool_call [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+        <tr><td bgcolor="#dbe7f5" colspan="2"><b>tool_call</b></td></tr>
+        <tr><td port="pk" align="left">tool_call_id</td><td port="pk_r" align="left">PK</td></tr>
+        <tr><td port="agent" align="left">agent_id</td><td port="agent_r" align="left">FK</td></tr>
+        <tr><td align="left">seq</td><td></td></tr>
+        <tr><td align="left">called_at</td><td></td></tr>
+        <tr><td align="left">ts_is_reconstructed</td><td></td></tr>
+        <tr><td align="left">displayed_command</td><td></td></tr>
+        <tr><td align="left">executed_command</td><td></td></tr></table>>];
+
+    behavior_label [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+        <tr><td bgcolor="#f5e6d3" colspan="2"><b>behavior_label</b></td></tr>
+        <tr><td port="pk" align="left">label_id</td><td port="pk_r" align="left">PK</td></tr>
+        <tr><td port="agent" align="left">agent_id</td><td port="agent_r" align="left">FK</td></tr>
+        <tr><td port="tc" align="left">tool_call_id</td><td port="tc_r" align="left">FK</td></tr>
+        <tr><td align="left">sweep</td><td></td></tr>
+        <tr><td align="left">subcategory</td><td></td></tr>
+        <tr><td align="left">importance</td><td></td></tr>
+        <tr><td align="left">labeled_by</td><td></td></tr>
+        <tr><td align="left">human_verified</td><td></td></tr></table>>];
+    model:pk_r:e -> agent:model:w;
+    task:pk_r:e -> agent:task:w;
+    agent:pk_r:e -> message:author:w;
+    agent:pk_r:e -> message_read:reader:w;
+    agent:pk_r:e -> tool_call:agent:w;
+    agent:pk_r:e -> behavior_label:agent:w;
+    message:pk_r:e -> message_read:msg:w;
+    message:pk_r:e -> message:parent_r:e;
+    message:pk_r:e -> message:reply_r:e;
+    workstream:pk_r:e -> message:ws:w;
+    workstream:pk_r:e -> workstream:parent_r:e;
+    tool_call:pk_r:e -> behavior_label:tc:w;
+}
